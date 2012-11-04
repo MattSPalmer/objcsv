@@ -13,8 +13,8 @@ func csvError(msg string, args ...interface{}) error {
 }
 
 // ReadCSV reads from reader r into a pointer to a slice of the destination struct type.
-func ReadCSV(r io.Reader, ptrToSlice interface{}) (error) {
-  pv := reflect.ValueOf(ptrToSlice)
+func ReadCSV(r io.Reader, ptrToSlice interface{}) error {
+	pv := reflect.ValueOf(ptrToSlice)
 	if pv.IsNil() {
 		return csvError("expected %v to have a non-nil value", ptrToSlice)
 	}
@@ -42,7 +42,7 @@ func ReadCSV(r io.Reader, ptrToSlice interface{}) (error) {
 		if err != nil {
 			return err
 		}
-    pv.Elem().Set(reflect.Append(pv.Elem(), rv.Elem()))
+		pv.Elem().Set(reflect.Append(pv.Elem(), rv.Elem()))
 	}
 	return nil
 }
@@ -53,20 +53,20 @@ func recordToValue(ss []string, t reflect.Type) (reflect.Value, error) {
 		return v, csvError("recordToValue: can't decode CSV record to struct (field mismatch)")
 	}
 	for i, s := range ss {
-    if s == "" {
-      continue
-    }
+		if s == "" {
+			continue
+		}
 		f := t.Field(i)
 		ft := f.Type.Kind()
 		fv := v.Elem().Field(i)
 		typeError := func(msg string, e error) error {
-      return csvError("%v: type %v, field %v: %v", msg, ft, f.Name, e)
+			return csvError("%v: type %v, field %v: %v", msg, ft, f.Name, e)
 		}
 
 		switch ft {
 		case reflect.String:
 			fv.SetString(s)
-    case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 			theInt, err := strconv.ParseInt(s, 10, 64)
 			if err != nil {
 				return v, typeError("int", err)
