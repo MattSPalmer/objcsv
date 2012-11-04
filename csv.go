@@ -1,4 +1,4 @@
-package csv
+package objcsv
 
 import (
 	"encoding/csv"
