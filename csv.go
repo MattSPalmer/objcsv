@@ -50,7 +50,7 @@ func ReadCSV(r io.Reader, ptrToSlice interface{}) error {
 func recordToValue(ss []string, t reflect.Type) (reflect.Value, error) {
 	v := reflect.New(t)
 	if len(ss) != t.NumField() {
-		return v, csvError("recordToValue: can't decode CSV record to struct (field mismatch)")
+        return v, csvError("recordToValue: can't decode CSV record to struct (field mismatch): expected %v fields, got %v", t.NumField(), len(ss))
 	}
 	for i, s := range ss {
 		if s == "" {
